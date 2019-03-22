@@ -2,7 +2,7 @@
 
 This is a coding challenge for prospective front-end and full-stack developer applicants applying to DemandHub. If you're unfamiliar with React, Facebook has put together a helpful tutorial that provides a quick introduction to the basics: https://reactjs.org/docs/hello-world.html
 
-## Node Packages Added To Complete the Challegne:
+## Node Packages Added To Complete the Challenge:
 - react-grid-gallery
 - intersection-observer
 
