@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import Unsplash from 'unsplash-js';
+import Gallery from 'react-grid-gallery';
 
 class App extends Component {
 
@@ -9,7 +9,7 @@ class App extends Component {
     super(props);
     this.myref = React.createRef();
     this.state = {
-      images: [],
+      galleryImages: [],
       loading: false,
       page: 0,
       prevY: 0,
@@ -29,9 +29,8 @@ class App extends Component {
       options
     );
 
-    //Observ the `loadingRef`
+    //Observe the `loadingRef`
     this.observer.observe(this.loadingRef);
- 
   }
 
   handleObserver = (entities, options) => {
@@ -46,14 +45,25 @@ class App extends Component {
 
   getImages(page){
     this.setState({ loading: true});
-    //http requets
 
-    var url = `https://api.unsplash.com/photos/curated?client_id=871acdafa9dfd095742022097a68696df5d2c17a9fb80f5a14d1482099742697&page=${page}`;
+    //http request
+    var url = `https://api.unsplash.com/photos/curated?client_id=871acdafa9dfd095742022097a68696df5d2c17a9fb80f5a14d1482099742697&page=${page}&per_page=30`;
     fetch(url)
     .then(response => response.json())
     .then(data => {
+      let tempImages = [];
+      data.forEach(image => {
+        tempImages.push({
+          "src": image.urls.regular,
+          "thumbnail": image.urls.thumb,
+          "alt": image.alt_description,
+          "caption": (image.description ? image.description : "") + (image.alt_description ?  " | " + image.alt_description : "" ),
+          "thumbnailWidth": image.width/10,
+          "thumbnailHeight": image.height/10,
+        })
+      });
       this.setState({
-        images: [... this.state.images, ...data]
+        galleryImages: [... this.state.galleryImages, ...tempImages]
       });
       this.setState({ loading: true});
     })
@@ -62,8 +72,10 @@ class App extends Component {
 
   render() {
     const loadingCSS = {
-      height: '100px',
-      margin: '30px'
+      height: '50px',
+      margin: '80px 0px',
+      padding: '30px',
+      clear: 'both'
     };
     const loadingTextCSS = { display: this.state.loading ? 'block' : 'none' };
     return (
@@ -73,13 +85,7 @@ class App extends Component {
         </h3>
         <div style={{ minHeight: '800px' }}>
           <ul>
-            {this.state.images.map(image =>
-              <img 
-                key={image.id}
-                src={image.urls.regular} 
-                alt={image.description} 
-              />
-            )}
+            <Gallery images={this.state.galleryImages}></Gallery>
           </ul>
         </div>
         <div

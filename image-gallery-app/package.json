@@ -5,6 +5,7 @@
   "dependencies": {
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
+    "react-grid-gallery": "^0.5.4",
     "react-scripts": "2.1.8",
     "unsplash-js": "^5.0.0"
   },
