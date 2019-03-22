@@ -2,6 +2,14 @@
 
 This is a coding challenge for prospective front-end and full-stack developer applicants applying to DemandHub. If you're unfamiliar with React, Facebook has put together a helpful tutorial that provides a quick introduction to the basics: https://reactjs.org/docs/hello-world.html
 
+## Node Packages Added To Complete the Challegne:
+- react-grid-gallery
+- intersection-observer
+
+```
+npm i react-grid-gallery
+npm install intersection-observer
+```
 ## Goal:
 
 #### Build a simple React app that allows viewing and interacting with a grid of curated photos from Unsplash

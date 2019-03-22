@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Gallery from 'react-grid-gallery';
 
@@ -7,7 +6,7 @@ class App extends Component {
 
   constructor(props){
     super(props);
-    this.myref = React.createRef();
+    // The State Object Attributes 
     this.state = {
       galleryImages: [],
       loading: false,
@@ -17,11 +16,14 @@ class App extends Component {
   }
 
   componentDidMount(){
-    this.getImages(this.state.page);
-    this.state.page++;
+    // load some images initially
+    this.getImages(this.state.page);    
+    this.setState({ page: this.state.page+1});      // page++
+    
+    // observer options
     const options = {
-      root: null,
-      threshold: 1.0,
+      root: null,         //page as root
+      threshold: 1.0,     //only observe when the hilw object is visible
     }
 
     this.observer = new IntersectionObserver(
@@ -29,14 +31,17 @@ class App extends Component {
       options
     );
 
-    //Observe the `loadingRef`
+    // set the target. Observe `loadingRef`
     this.observer.observe(this.loadingRef);
   }
 
+  // callback for observer
   handleObserver = (entities, options) => {
     const y = entities[0].boundingClientRect.y;
     if (this.state.prevY > y) {
+      // increase the page
       let page = this.state.page+1;
+      //get images for the next page
       this.getImages(page);
       this.setState({ page: page });
     }
@@ -51,50 +56,52 @@ class App extends Component {
     fetch(url)
     .then(response => response.json())
     .then(data => {
+      //turn each image opbect returned by the unsplash API to the proper format
       let tempImages = [];
       data.forEach(image => {
         tempImages.push({
           "src": image.urls.regular,
           "thumbnail": image.urls.thumb,
           "alt": image.alt_description,
+          // additional information in lightbox. Smarter logic should be place here
           "caption": (image.description ? image.description : "") + (image.alt_description ?  " | " + image.alt_description : "" ),
           "thumbnailWidth": image.width/10,
           "thumbnailHeight": image.height/10,
         })
       });
-      this.setState({
-        galleryImages: [... this.state.galleryImages, ...tempImages]
-      });
+      // update image gallery
+      this.setState({ galleryImages: [...this.state.galleryImages, ...tempImages] });
       this.setState({ loading: true});
     })
     .catch(error => console.error(error));
   }
 
   render() {
+    // loading icon styles
     const loadingCSS = {
       height: '50px',
       margin: '80px 0px',
-      padding: '30px',
+      padding: '0px',
       clear: 'both'
     };
+    // Used to show or hide the loading icon
     const loadingTextCSS = { display: this.state.loading ? 'block' : 'none' };
     return (
-      <div className="App">        
+      <div className="App">
+        {/* The Website Header */}
         <h3>
-            Image Gallery
+            Carlos' Image Gallery
         </h3>
-        <div style={{ minHeight: '800px' }}>
+        {/* The Grid of Images */}
+        <div style={{ minHeight: '800px',  padding: '0', margin: '0'}}>
           <ul>
             <Gallery images={this.state.galleryImages}></Gallery>
           </ul>
         </div>
-        <div
-          ref={loadingRef => (this.loadingRef = loadingRef)}
-          style={loadingCSS}
-        >
+        {/* The loading Icon */}
+        <div ref={loadingRef => (this.loadingRef = loadingRef)} style={loadingCSS}>
           <span style={loadingTextCSS}>Loading...</span>
-        </div>
-        
+        </div>        
       </div>
     );
   }
