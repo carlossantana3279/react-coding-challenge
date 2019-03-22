@@ -11,7 +11,6 @@ class App extends Component {
       galleryImages: [],
       loading: false,
       page: 0,
-      prevY: 0,
     }
   }
 
@@ -37,15 +36,11 @@ class App extends Component {
 
   // callback for observer
   handleObserver = (entities, options) => {
-    const y = entities[0].boundingClientRect.y;
-    if (this.state.prevY > y) {
       // increase the page
       let page = this.state.page+1;
       //get images for the next page
       this.getImages(page);
       this.setState({ page: page });
-    }
-    this.setState({ prevY: y });
   }
 
   getImages(page){
